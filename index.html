@@ -551,7 +551,15 @@ function monthsDiff(a,b){var pa=a.split('-'),pb=b.split('-');return(parseInt(pb[
 // ════════════════════════════════════════════════════════════
 // Para ativar Firebase, substitua null pelas suas credenciais:
 // (console.firebase.google.com → Seu app → firebaseConfig)
-var FIREBASE_CFG = null;
+var FIREBASE_CFG = {
+  apiKey: "AIzaSyDZBkD09rA5HVjqoRj9fFdtCLq2rI8ToKA",
+  authDomain: "sexta-feira-4aa40.firebaseapp.com",
+  projectId: "sexta-feira-4aa40",
+  storageBucket: "sexta-feira-4aa40.firebasestorage.app",
+  messagingSenderId: "971734942169",
+  appId: "1:971734942169:web:58f43bb8462355458f99c8",
+  measurementId: "G-6X2XJ7DFK8"
+};
 // var FIREBASE_CFG = {
 //   apiKey:"...", authDomain:"...", projectId:"...",
 //   storageBucket:"...", messagingSenderId:"...", appId:"..."
@@ -987,7 +995,11 @@ async function callIA(msg){
   msgs.push({role:'user',content:ctx+'\n\nMensagem: '+msg});
   try{
     var r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:buildSys(),messages:msgs})
     });
     var data=await r.json();
@@ -997,7 +1009,7 @@ async function callIA(msg){
     if(state.chatHistory.length>40)state.chatHistory=state.chatHistory.slice(-40);
     sched();
     return reply;
-  }catch(e){return'Erro de conexão. Verifique sua internet.';}
+  }catch(e){var errMsg=e&&e.message?e.message:'desconhecido'; return'⚠️ Não consegui conectar à IA ('+errMsg+'). Verifique sua conexão e tente novamente.';}
 }
 function md2html(t){
   return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
@@ -1232,7 +1244,11 @@ async function checkBriefing() {
     'Use bullet points curtos. Seja direto.';
   try {
     var r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6', max_tokens: 400,
         system: 'Voce e o Sexta-Feira, conselheiro financeiro. Responda em portugues brasileiro. Seja direto e curto.',
