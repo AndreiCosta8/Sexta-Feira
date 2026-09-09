@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SEXTA-FEIRA v7.2 | Deploy: github.com/AndreiCosta8 | Firebase: console.firebase.google.com -->
+<!-- SEXTA-FEIRA v7.3 | Deploy: github.com/AndreiCosta8 | Firebase: console.firebase.google.com -->
 
 <html lang="pt-BR">
 <head>
@@ -280,7 +280,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);display:flex;flex-direction
 <div class="topbar">
   <div class="tb-left">
     <div class="tb-title">Sexta-Feira</div>
-    <div class="tb-sub">Conselheiro Financeiro IA &nbsp;·&nbsp; <span style="color:rgba(214,185,107,.5);font-size:9px">v7.2</span></div>
+    <div class="tb-sub">Conselheiro Financeiro IA &nbsp;·&nbsp; <span style="color:rgba(214,185,107,.5);font-size:9px">v7.3</span></div>
   </div>
   <div class="tb-right">
     <button class="pdf-btn" id="pdf-btn" type="button">⬇ PDF</button>
@@ -548,7 +548,7 @@ function monthsDiff(a,b){var pa=a.split('-'),pb=b.split('-');return(parseInt(pb[
 
 
 // ════════════════════════════════════════════════════════════
-// SEXTA-FEIRA v7.1 — STORAGE (Firebase + Claude + localStorage)
+// SEXTA-FEIRA v7.3 — STORAGE (Firebase + Claude + localStorage)
 // ════════════════════════════════════════════════════════════
 // Para ativar Firebase, substitua null pelas suas credenciais:
 // (console.firebase.google.com → Seu app → firebaseConfig)
@@ -1075,6 +1075,137 @@ document.querySelectorAll('.chip').forEach(function(c){
     if(curPanel!=='ia')document.querySelector('[data-p="ia"]').click();
     setTimeout(handleSend,100);
   });
+});
+
+
+// ── CONSELHEIRO — GERADOR DE RESUMO ──
+var tiposConselho = {
+  saude: 'Analise minha saude financeira deste mes. Estou no caminho certo? O que esta bom e o que precisa melhorar? Cite valores reais.',
+  cortar: 'Analise meus gastos e me diga o que posso cortar para sobrar mais dinheiro. Seja especifico com valores e sugestoes praticas.',
+  dividas: 'Como estao minhas dividas (cartao, emprestimo, financiamento) em relacao ao ideal? Qual estrategia para quita-las mais rapido?',
+  comparar: 'Compare meu desempenho financeiro com o mes anterior. O que melhorou e o que piorou? Quais tendencias voce identifica?',
+  superfluo: 'Identifique os gastos superfluous deste mes e me de um plano concreto para o proximo mes com valores especificos para reduzir.',
+  poupar: 'Como posso poupar mais dinheiro? Considerando minha renda e gastos atuais, qual e o potencial real de poupanca?',
+  objetivos: 'Analise o progresso dos meus objetivos de economia. Estou no ritmo certo? O que preciso ajustar para bater os prazos?',
+  geral: 'Faca uma analise financeira completa: saude do orcamento, dividas, poupanca, gastos superfluous, objetivos e recomendacoes praticas.'
+};
+var tipoAtivo = 'geral';
+
+function buildResumoConselho(tipo) {
+  var d = cur();
+  var tot = tExp(d), bal = d.salary - tot;
+  var sav = d.salary > 0 ? (bal / d.salary * 100) : 0;
+  var mp = getMeta(d), ma = d.salary * mp / 100;
+  var pa = tByCls(d, 'poupanca');
+  var pk2 = prevKey(state.currentMonth);
+  var out = [];
+  out.push('=== DADOS DO SEXTA-FEIRA - ' + ml(state.currentMonth).toUpperCase() + ' ===');
+  out.push('');
+  out.push('PERGUNTA: ' + (tiposConselho[tipo] || tiposConselho.geral));
+  out.push('');
+  out.push('--- RESUMO DO MES ---');
+  out.push('Salario liquido: ' + fm(d.salary));
+  out.push('Total gasto: ' + fm(tot));
+  out.push('Saldo restante: ' + fm(bal));
+  out.push('Taxa de poupanca real: ' + fp(sav));
+  out.push('Meta de poupanca: ' + mp + '% = ' + fm(ma));
+  out.push('Ja poupado: ' + fm(pa) + (pa >= ma ? ' (META BATIDA)' : ' - faltam ' + fm(ma - pa)));
+  out.push('');
+  out.push('--- DIVISAO 50/30/20 ---');
+  out.push('Necessidades: ' + fp(tByCls(d,'necessidade')/(d.salary||1)*100) + ' (ref: 50%)');
+  out.push('Desejos: ' + fp(tByCls(d,'desejo')/(d.salary||1)*100) + ' (ref: 30%)');
+  out.push('Poupanca: ' + fp(pa/(d.salary||1)*100) + ' (ref: 20%)');
+  out.push('');
+  var debt = tDebt(d);
+  out.push('--- DIVIDAS ---');
+  out.push('Total dividas: ' + fm(debt) + ' (' + fp(d.salary > 0 ? debt/d.salary*100 : 0) + ' da renda)');
+  out.push('');
+  out.push('--- GASTOS POR GRUPO ---');
+  GROUPS.forEach(function(g) {
+    var v = tByG(d, g.key);
+    if (v > 0) out.push(g.label + ': ' + fm(v) + ' (' + fp(d.salary > 0 ? v/d.salary*100 : 0) + ')');
+  });
+  out.push('');
+  var top = d.categories.slice().sort(function(a,b){return b.value-a.value;}).slice(0,8);
+  if (top.length) {
+    out.push('--- MAIORES GASTOS ---');
+    top.forEach(function(c){
+      var g = GM[c.group]||GM.outros;
+      out.push(c.name + ': ' + fm(c.value) + ' (' + c.classification + ' - ' + g.label + ')');
+    });
+    out.push('');
+  }
+  var superf = getSuperfluos(d);
+  if (superf.length) {
+    out.push('--- GASTOS POSSIVELMENTE SUPERFLUOUS ---');
+    superf.forEach(function(c){ out.push('* ' + c.name + ': ' + fm(c.value)); });
+    out.push('');
+  }
+  if (pk2) {
+    var pd = state.months[pk2], pt = tExp(pd);
+    out.push('--- MES ANTERIOR (' + ml(pk2).toUpperCase() + ') ---');
+    out.push('Salario: ' + fm(pd.salary) + ' | Gasto: ' + fm(pt) + ' | Saldo: ' + fm(pd.salary - pt));
+    out.push('');
+  }
+  if (state.objetivos && state.objetivos.length) {
+    out.push('--- OBJETIVOS ---');
+    state.objetivos.forEach(function(o){
+      var pct = o.total > 0 ? Math.round(o.saved/o.total*100) : 0;
+      out.push(o.name + ': ' + fm(o.saved) + ' de ' + fm(o.total) + ' (' + pct + '%)');
+    });
+    out.push('');
+  }
+  out.push('=== FIM DOS DADOS ===');
+  out.push('');
+  out.push('Responda em portugues brasileiro como o Sexta-Feira, conselheiro financeiro pessoal. Seja direto, cite valores reais e de recomendacoes praticas e especificas.');
+  return out.join('\n');
+}
+
+function renderConselhoPreview(tipo) {
+  tipoAtivo = tipo;
+  document.querySelectorAll('.conselho-chip').forEach(function(c){
+    c.classList.toggle('ativo', c.getAttribute('data-tipo') === tipo);
+  });
+  var texto = buildResumoConselho(tipo);
+  var prev = document.getElementById('conselho-preview');
+  var lbl = document.getElementById('conselho-lbl');
+  var txtEl = document.getElementById('conselho-texto');
+  var okEl = document.getElementById('copiar-ok');
+  if(prev) prev.style.display = 'block';
+  if(lbl) lbl.style.display = 'block';
+  if(txtEl) txtEl.textContent = texto;
+  if(okEl) okEl.style.display = 'none';
+  setTimeout(function(){ if(prev) prev.scrollIntoView({behavior:'smooth',block:'start'}); }, 100);
+}
+
+document.addEventListener('click', function(e) {
+  var chip = e.target.closest('.conselho-chip');
+  if(chip) renderConselhoPreview(chip.getAttribute('data-tipo'));
+
+  if(e.target.id === 'copiar-btn') {
+    var texto = buildResumoConselho(tipoAtivo);
+    var ok = document.getElementById('copiar-ok');
+    var btn = document.getElementById('copiar-btn');
+    function showOk(){
+      if(ok) ok.style.display='block';
+      if(btn){ btn.textContent='✓ Copiado!'; btn.style.background='var(--good)'; }
+      setTimeout(function(){
+        if(ok) ok.style.display='none';
+        if(btn){ btn.textContent='Copiar para o Claude'; btn.style.background=''; }
+      }, 3000);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(showOk).catch(function(){
+        var el=document.createElement('textarea');el.value=texto;
+        document.body.appendChild(el);el.select();document.execCommand('copy');
+        document.body.removeChild(el);showOk();
+      });
+    } else {
+      var el=document.createElement('textarea');el.value=texto;
+      document.body.appendChild(el);el.select();document.execCommand('copy');
+      document.body.removeChild(el);showOk();
+    }
+  }
 });
 
 // ── CONSULTA ──
