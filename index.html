@@ -662,7 +662,7 @@ document.querySelectorAll('.nav-btn').forEach(function(btn){
     document.getElementById('scroll-area').scrollTop=0;
     if(p==='dash')renderDash();
     if(p==='obj')renderObjetivos();
-    if(p==='ia'){var cm=document.getElementById('chat-msgs');setTimeout(function(){cm.scrollTop=cm.scrollHeight;},80);}
+    // REMOVIDO: if(p==='ia'){var cm=document.getElementById('chat-msgs');set
   });
 });
 
@@ -707,8 +707,8 @@ document.getElementById('reset-btn').addEventListener('click',async function(){
   state={months:{},currentMonth:cmk(),chatHistory:[],objetivos:[]};
   em(state.currentMonth);
   document.getElementById('month-input').value=state.currentMonth;
-  var cm=document.getElementById('chat-msgs');
-  while(cm.children.length>1)cm.removeChild(cm.lastChild);
+  // REMOVIDO: var cm=document.getElementById('chat-msgs');
+  // REMOVIDO: while(cm.children.length>1)cm.removeChild(cm.lastChild);
   renderAll();
   try{await _store.set(SK,JSON.stringify(state));}catch(e){}
 });
@@ -1032,19 +1032,19 @@ function md2html(t){
     .replace(/^/,'<p>').replace(/$/,'</p>');
 }
 function appendMsg(text,isUser){
-  var c=document.getElementById('chat-msgs'),div=document.createElement('div');
+  // REMOVIDO: var c=document.getElementById('chat-msgs'),div=document.crea
   if(isUser){div.className='user-msg';div.innerHTML='<div class="user-bub">'+esc(text)+'</div>';}
   else{div.className='ia-msg';div.innerHTML='<div class="ia-av">SF</div><div class="ia-bub">'+md2html(text)+'</div>';}
   c.appendChild(div);c.scrollTop=c.scrollHeight;return div;
 }
 function appendThinking(){
-  var c=document.getElementById('chat-msgs'),div=document.createElement('div');
+  // REMOVIDO: var c=document.getElementById('chat-msgs'),div=document.crea
   div.className='ia-msg';
   div.innerHTML='<div class="ia-av">SF</div><div class="ia-bub"><div class="ia-thinking"><span></span><span></span><span></span>Analisando…</div></div>';
   c.appendChild(div);c.scrollTop=c.scrollHeight;return div;
 }
 function renderChatHistory(){
-  var c=document.getElementById('chat-msgs');
+  // REMOVIDO: var c=document.getElementById('chat-msgs');
   while(c.children.length>1)c.removeChild(c.lastChild);
   if(state.chatHistory&&state.chatHistory.length){
     var note=document.createElement('div');
@@ -1052,12 +1052,12 @@ function renderChatHistory(){
     note.textContent='— retomando conversa anterior —';
     c.appendChild(note);
     state.chatHistory.forEach(function(m){appendMsg(m.content,m.role==='user');});
-    var mn=document.getElementById('mem-note');
-    if(mn)mn.textContent='Memória ativa · '+Math.floor(state.chatHistory.length/2)+' trocas lembradas';
+    // REMOVIDO: var mn=document.getElementById('mem-note');
+  // REMOVIDO: if(mn)mn.textContent='Memória ativa · '+Math.floor(state.cha
   }
 }
 async function handleSend(){
-  var inp=document.getElementById('chat-input'),btn=document.getElementById('send-btn');
+  // REMOVIDO: var inp=document.getElementById('chat-input'),btn=document.g
   var msg=inp.value.trim();if(!msg)return;
   inp.value='';btn.disabled=true;
   appendMsg(msg,true);
@@ -1065,18 +1065,11 @@ async function handleSend(){
   var reply=await callIA(msg);
   th.remove();appendMsg(reply,false);
   btn.disabled=false;inp.focus();
-  var mn=document.getElementById('mem-note');
-  if(mn)mn.textContent='Memória ativa · '+Math.floor(state.chatHistory.length/2)+' trocas lembradas';
+  // REMOVIDO: var mn=document.getElementById('mem-note');
+  // REMOVIDO: if(mn)mn.textContent='Memória ativa · '+Math.floor(state.cha
 }
-document.getElementById('send-btn').addEventListener('click',handleSend);
-document.getElementById('chat-input').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey)handleSend();});
-document.querySelectorAll('.chip').forEach(function(c){
-  c.addEventListener('click',function(){
-    document.getElementById('chat-input').value=c.getAttribute('data-q');
-    if(curPanel!=='ia')document.querySelector('[data-p="ia"]').click();
-    setTimeout(handleSend,100);
-  });
-});
+// Conselheiro: usar botões de chip no painel (sem chat direto)
+
 
 
 // ── CONSELHEIRO — GERADOR DE RESUMO ──
