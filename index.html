@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SEXTA-FEIRA v7.3 | Deploy: github.com/AndreiCosta8 | Firebase: console.firebase.google.com -->
+<!-- SEXTA-FEIRA v7.4 | Deploy: github.com/AndreiCosta8 | Firebase: console.firebase.google.com -->
 
 <html lang="pt-BR">
 <head>
@@ -280,7 +280,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);display:flex;flex-direction
 <div class="topbar">
   <div class="tb-left">
     <div class="tb-title">Sexta-Feira</div>
-    <div class="tb-sub">Conselheiro Financeiro IA &nbsp;·&nbsp; <span style="color:rgba(214,185,107,.5);font-size:9px">v7.3</span></div>
+    <div class="tb-sub">Conselheiro Financeiro IA &nbsp;·&nbsp; <span style="color:rgba(214,185,107,.5);font-size:9px">v7.4</span></div>
   </div>
   <div class="tb-right">
     <button class="pdf-btn" id="pdf-btn" type="button">⬇ PDF</button>
@@ -428,35 +428,36 @@ body{font-family:'Inter',sans-serif;color:var(--ink);display:flex;flex-direction
 
   <!-- ██ IA ██ -->
   <div class="panel" id="panel-ia">
-    <div class="chat-outer">
-      <div class="mem-note" id="mem-note">Memória ativa · o Sexta-Feira lembra de tudo que você já conversou</div>
-      <div class="chips" id="chips">
-        <span class="chip" data-q="Como está minha saúde financeira neste mês?">📊 Saúde do mês</span>
-        <span class="chip" data-q="O que posso cortar para poupar mais?">✂️ O que cortar?</span>
-        <span class="chip" data-q="Identifique os gastos supérfluos do mês atual e me dê um plano para o mês seguinte.">🔎 Supérfluos do mês</span>
-        <span class="chip" data-q="Como estão minhas dívidas em relação ao ideal?">💳 Minhas dívidas</span>
-        <span class="chip" data-q="Compare meu desempenho com o mês anterior e aponte o que piorou e o que melhorou.">📅 Vs. mês anterior</span>
-        <span class="chip" data-q="Analisando meu histórico de meses, quais são meus padrões de gastos ruins?">🔍 Meus padrões</span>
-        <span class="chip" data-q="Quero guardar mais dinheiro. Me dê um plano realista baseado nos meus gastos.">💰 Plano de poupança</span>
-        <span class="chip" data-q="Estou com dívidas. Qual a melhor estratégia para quitar mais rápido?">🏦 Estratégia dívidas</span>
-        <span class="chip" data-q="Me dê dicas específicas para reduzir meus gastos com alimentação e lazer.">🍽️ Alimentação e lazer</span>
-      </div>
-      <div class="chat-msgs" id="chat-msgs">
-        <div class="ia-msg">
-          <div class="ia-av">SF</div>
-          <div class="ia-bub">
-            <p>Olá! Sou o <strong>Sexta-Feira</strong>, seu conselheiro financeiro pessoal com IA.</p>
-            <p>Tenho acesso completo aos seus dados — salários, gastos, metas, objetivos e todo o histórico mensal. Também me lembro das nossas conversas anteriores, então posso acompanhar sua evolução e identificar padrões ao longo do tempo.</p>
-            <p>Use os atalhos acima ou me pergunte qualquer coisa sobre suas finanças. Sou direto e honesto — se algo não está bom, vou te dizer claramente e sugerir o que fazer.</p>
-            <p style="font-size:12px;color:var(--soft);margin-top:8px;padding:8px;background:rgba(169,129,46,.1);border-radius:6px;border-left:2px solid var(--gold)">💡 <strong>Para o Conselheiro IA funcionar</strong>, abra este sistema pelo <strong>Claude.ai</strong> — a IA só funciona dentro da plataforma Claude. Os dados (lançamentos, dashboard, objetivos) funcionam normalmente em qualquer lugar.</p>
-          </div>
-        </div>
-      </div>
-      <div class="chat-bar">
-        <input type="text" id="chat-input" placeholder="Pergunte qualquer coisa…" aria-label="Mensagem">
-        <button class="send-btn" id="send-btn" type="button" aria-label="Enviar">➤</button>
+    <div class="slabel">Conselheiro Sexta-Feira</div>
+    <div class="card dark" style="margin-bottom:10px;">
+      <div style="font-family:'Zilla Slab',serif;font-size:16px;font-weight:700;color:var(--gold-l);margin-bottom:10px;">&#129302; Como usar o Conselheiro</div>
+      <div style="font-size:13px;color:rgba(245,239,221,.85);line-height:1.8;">
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;flex-shrink:0">1&#65039;&#8419;</span><span>Escolha o tipo de analise abaixo</span></div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;flex-shrink:0">2&#65039;&#8419;</span><span>Clique em <strong style="color:var(--gold-l)">Copiar para o Claude</strong></span></div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;flex-shrink:0">3&#65039;&#8419;</span><span>Abra <strong style="color:var(--gold-l)">claude.ai</strong> &rarr; cole (Ctrl+V) &rarr; envie</span></div>
       </div>
     </div>
+    <div class="slabel">Tipo de analise</div>
+    <div class="card" style="padding:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="conselho-chip" data-tipo="saude" type="button">Saude financeira</button>
+        <button class="conselho-chip" data-tipo="cortar" type="button">O que cortar?</button>
+        <button class="conselho-chip" data-tipo="dividas" type="button">Minhas dividas</button>
+        <button class="conselho-chip" data-tipo="comparar" type="button">Vs mes anterior</button>
+        <button class="conselho-chip" data-tipo="superfluo" type="button">Gastos superfluous</button>
+        <button class="conselho-chip" data-tipo="poupar" type="button">Poupar mais</button>
+        <button class="conselho-chip" data-tipo="objetivos" type="button">Meus objetivos</button>
+        <button class="conselho-chip" data-tipo="geral" type="button">Analise completa</button>
+      </div>
+    </div>
+    <div class="slabel" id="conselho-lbl" style="display:none">Resumo pronto para copiar</div>
+    <div class="card" id="conselho-preview" style="display:none;padding:14px;">
+      <p style="font-size:12px;color:var(--soft);margin:0 0 8px">Cole no Claude.ai para receber analise com seus dados reais:</p>
+      <div id="conselho-texto" style="background:#f5f0e4;border-radius:8px;padding:11px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.6;color:var(--ink);white-space:pre-wrap;max-height:280px;overflow-y:auto;border:1px solid var(--line)"></div>
+      <button class="btn-primary" id="copiar-btn" type="button" style="margin-top:10px">Copiar para o Claude</button>
+      <div id="copiar-ok" style="display:none;text-align:center;color:var(--good);font-size:14px;margin-top:10px;font-weight:600">Copiado! Abra claude.ai e cole agora</div>
+    </div>
+    <div style="height:8px"></div>
   </div>
 
   <!-- ██ CONSULTA ██ -->
@@ -548,7 +549,7 @@ function monthsDiff(a,b){var pa=a.split('-'),pb=b.split('-');return(parseInt(pb[
 
 
 // ════════════════════════════════════════════════════════════
-// SEXTA-FEIRA v7.3 — STORAGE (Firebase + Claude + localStorage)
+// SEXTA-FEIRA v7.4 — STORAGE (Firebase + Claude + localStorage)
 // ════════════════════════════════════════════════════════════
 // Para ativar Firebase, substitua null pelas suas credenciais:
 // (console.firebase.google.com → Seu app → firebaseConfig)
