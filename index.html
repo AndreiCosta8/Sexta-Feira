@@ -280,7 +280,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);display:flex;flex-direction
 <div class="topbar">
   <div class="tb-left">
     <div class="tb-title">Sexta-Feira</div>
-    <div class="tb-sub">Conselheiro Financeiro IA &nbsp;·&nbsp; <span style="color:rgba(214,185,107,.5);font-size:9px">v7.5</span></div>
+    <div class="tb-sub">Conselheiro Financeiro IA &nbsp;·&nbsp; <span style="color:rgba(214,185,107,.5);font-size:9px">v7.5b</span></div>
   </div>
   <div class="tb-right">
     <button class="pdf-btn" id="pdf-btn" type="button">⬇ PDF</button>
@@ -547,7 +547,6 @@ function sugMeta(d){var dp=d.salary>0?tDebt(d)/d.salary*100:0;return dp>30?10:dp
 function getMeta(d){return(d.metaPct===null||d.metaPct===undefined)?sugMeta(d):d.metaPct;}
 function monthsDiff(a,b){var pa=a.split('-'),pb=b.split('-');return(parseInt(pb[0])*12+parseInt(pb[1]))-(parseInt(pa[0])*12+parseInt(pa[1]));}
 
-
 // ════════════════════════════════════════════════════════════
 // SEXTA-FEIRA v7.5 — STORAGE (Firebase + Claude + localStorage)
 // ════════════════════════════════════════════════════════════
@@ -613,7 +612,6 @@ async function load(){
   if(!state.currentMonth)state.currentMonth=cmk();
   em(state.currentMonth);
   document.getElementById('month-input').value=state.currentMonth;
-  renderChatHistory();
   renderAll();
   sst('Salvo localmente · só você vê estes dados');
   setTimeout(checkBriefing, 1200);
@@ -662,7 +660,6 @@ document.querySelectorAll('.nav-btn').forEach(function(btn){
     document.getElementById('scroll-area').scrollTop=0;
     if(p==='dash')renderDash();
     if(p==='obj')renderObjetivos();
-    // REMOVIDO: if(p==='ia'){var cm=document.getElementById('chat-msgs');set
   });
 });
 
@@ -707,7 +704,6 @@ document.getElementById('reset-btn').addEventListener('click',async function(){
   state={months:{},currentMonth:cmk(),chatHistory:[],objetivos:[]};
   em(state.currentMonth);
   document.getElementById('month-input').value=state.currentMonth;
-  // REMOVIDO: var cm=document.getElementById('chat-msgs');
   // REMOVIDO: while(cm.children.length>1)cm.removeChild(cm.lastChild);
   renderAll();
   try{await _store.set(SK,JSON.stringify(state));}catch(e){}
@@ -1032,29 +1028,14 @@ function md2html(t){
     .replace(/^/,'<p>').replace(/$/,'</p>');
 }
 function appendMsg(text,isUser){
-  // REMOVIDO: var c=document.getElementById('chat-msgs'),div=document.crea
   if(isUser){div.className='user-msg';div.innerHTML='<div class="user-bub">'+esc(text)+'</div>';}
   else{div.className='ia-msg';div.innerHTML='<div class="ia-av">SF</div><div class="ia-bub">'+md2html(text)+'</div>';}
   c.appendChild(div);c.scrollTop=c.scrollHeight;return div;
 }
 function appendThinking(){
-  // REMOVIDO: var c=document.getElementById('chat-msgs'),div=document.crea
   div.className='ia-msg';
   div.innerHTML='<div class="ia-av">SF</div><div class="ia-bub"><div class="ia-thinking"><span></span><span></span><span></span>Analisando…</div></div>';
   c.appendChild(div);c.scrollTop=c.scrollHeight;return div;
-}
-function renderChatHistory(){
-  // REMOVIDO: var c=document.getElementById('chat-msgs');
-  while(c.children.length>1)c.removeChild(c.lastChild);
-  if(state.chatHistory&&state.chatHistory.length){
-    var note=document.createElement('div');
-    note.style.cssText='text-align:center;font-size:11px;color:var(--soft);font-style:italic;padding:5px 0';
-    note.textContent='— retomando conversa anterior —';
-    c.appendChild(note);
-    state.chatHistory.forEach(function(m){appendMsg(m.content,m.role==='user');});
-    // REMOVIDO: var mn=document.getElementById('mem-note');
-  // REMOVIDO: if(mn)mn.textContent='Memória ativa · '+Math.floor(state.cha
-  }
 }
 async function handleSend(){
   // REMOVIDO: var inp=document.getElementById('chat-input'),btn=document.g
@@ -1069,8 +1050,6 @@ async function handleSend(){
   // REMOVIDO: if(mn)mn.textContent='Memória ativa · '+Math.floor(state.cha
 }
 // Conselheiro: usar botões de chip no painel (sem chat direto)
-
-
 
 // ── CONSELHEIRO — GERADOR DE RESUMO ──
 var tiposConselho = {
